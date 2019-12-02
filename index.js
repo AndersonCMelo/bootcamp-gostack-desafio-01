@@ -10,15 +10,11 @@ app.use(express.json());
 
 // CRUD - Created, Read, Update, Delete
 
-/**
- * A variável `projects` pode ser `const` porque um `array`
- * pode receber adições ou exclusões mesmo sendo uma constante.
- */
 const projects = [];
 
-/**
- * Middlware que checa se o título foi digitado
- */
+/*
+ * Checar se o título foi digitado
+*/
 function checkTitleWasPutted (req, res, next) {
   if (!req.body.title) {
     return res.status(400).json({ error: 'Título do projeto é necessário' })
@@ -27,9 +23,9 @@ function checkTitleWasPutted (req, res, next) {
   return next();
 }
 
-/**
- * Middleware que checa se o projeto existe
- */
+/*
+ * Checar se o projeto existe
+*/
 function checkProjectExists (req, res, next) {
   const { id } = req.params;
   const project = projects.find(p => p.id == id)
@@ -43,9 +39,9 @@ function checkProjectExists (req, res, next) {
   return next();
 }  
 
-/**
- * Middleware que dá log no número de requisições
- */
+/*
+ * Dar log no número de requisições
+*/
 function logRequests(req, res, next) {
   console.count("Número de requisições");
 
@@ -54,17 +50,17 @@ function logRequests(req, res, next) {
 
 app.use(logRequests);
 
-/**
- * Retorna todos os projetos
- */
+/*
+ * Retornar todos os projetos
+*/
 app.get('/projects', (req, res) => {
   return res.json(projects);
 }) 
 
-/**
+/*
  * Request body: id, title
- * Cadastra um novo projeto
- */
+ * Cadastrar um novo projeto
+*/
 app.post('/projects', checkTitleWasPutted, (req, res) => {
   const { id, title } = req.body;
 
@@ -75,11 +71,11 @@ app.post('/projects', checkTitleWasPutted, (req, res) => {
   return res.json(project);
 })
 
-/**
+/*
  * Route params: id
  * Request body: title
- * Altera o título do projeto com o id presente nos parâmetros da rota.
- */
+ * Alterar o título do projeto com o id presente nos parâmetros da rota.
+*/
 app.put('/projects/:id', checkTitleWasPutted, checkProjectExists, (req, res) => {
   const { id } = req.params;
   const { title } = req.body;
@@ -93,7 +89,7 @@ app.put('/projects/:id', checkTitleWasPutted, checkProjectExists, (req, res) => 
 
 /**
  * Route params: id
- * Deleta o projeto associado ao id presente nos parâmetros da rota.
+ * Deletar o projeto relacionado ao id presente nos parâmetros da rota.
  */
 app.delete('/projects/:id', checkProjectExists, (req, res) => {
   const { id } = req.params;
@@ -107,7 +103,7 @@ app.delete('/projects/:id', checkProjectExists, (req, res) => {
 
 /**
  * Route params: id;
- * Adiciona uma nova tarefa no projeto escolhido via id; 
+ * Adicionar uma nova tarefa no projeto escolhido via id; 
  */
 app.post('/projects/:id/tasks', checkProjectExists, (req, res) => {
   const { id } = req.params;
